@@ -108,9 +108,8 @@ def prepare_deploy(tag=None, prod=False):
     do_tag()
 
   # Set the app version to the git tag.
-  print 'env.deployment_tag:'
-  print env.deployment_tag
-  env.app.version = env.deployment_tag
+  print 'env.deployment_tag:%s' % env.deployment_tag
+
   if not prod:
     env.app.version += '-test'
   
@@ -192,15 +191,14 @@ def is_working_directory_clean():
 
 
 @include_appcfg
-def get_tags_name(sfx=''):
+def get_tags_name():
   last_tag_name = get_last_tag_match()
-  next_tag_name = env.app.version
+  next = 0
+  if last_tag_name and '.' in last_tag_name:
+    next = int(last_tag_name[-1:]) + 1
+  next_tag_name = '%s.%d' % (env.app.version, next)
   print yellow('Last tag name: %s' % last_tag_name)
   print yellow('Next tag name: %s' % next_tag_name)
   return (last_tag_name, next_tag_name)
 
-
-@include_appcfg
-def foo():
-  print env.app.version
 
