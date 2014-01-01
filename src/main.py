@@ -1,10 +1,8 @@
 #!/usr/bin/python
 
-"""Main handlers fro films data api."""
+"""Main handlers for films data api."""
 
 __author__ = 'adamjmcgrath@gmail.com (Adam McGrath)'
-
-import logging
 
 import webapp2
 import api

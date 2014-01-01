@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-"""Main handlers for films data api."""
+"""Task handlers for films data api."""
 
 __author__ = 'adamjmcgrath@gmail.com (Adam McGrath)'
 
@@ -19,7 +19,7 @@ import secrets
 
 LANG = '/lang/en'
 BASE_URL = 'https://www.googleapis.com/freebase/v1/mqlread/'
-ISO_DATE_FORMAT='%Y-%m'
+ISO_DATE_FORMAT = '%Y-%m'
 MIN_YEAR = 1960
 DEFAULT_DATE = datetime.date(2000, 1, 1)
 MQL = '''[{
@@ -58,6 +58,15 @@ MQL = '''[{
 
 
 def tokenize(phrase):
+  """ Create a list of partial tokens from s string. eg
+  dog -> [d, do, dog]
+
+  Args:
+    phrase (str): The phrase to tokenize
+
+  Return:
+    list The list of tokens.
+  """
   a = []
   for word in phrase.lower().split():
     j = 1
@@ -71,13 +80,21 @@ def tokenize(phrase):
 
 
 def create_film_document(film):
+  """ Creates a film document from a json dictionary of film data from Freebase.
+
+  Args:
+    film (dict): The film dictionary.
+
+  Return:
+    search.Document
+  """
   tokens = ','.join(tokenize(film['name']))
   imdb_id = film['imdb_id'] and film['imdb_id']['value']
   gross_revenue = int(film['gross_revenue'] and film['gross_revenue']['amount'] or 0)
   release_date = parse(film['initial_release_date'], default=DEFAULT_DATE)
 
   return search.Document(doc_id=film['id'],
-                         rank=max(gross_revenue, release_date.year),
+                         rank=max(gross_revenue, release_date.year),  # Rank films by gross revenue, then by date.
                          language='en',
                          fields=[
                              search.TextField(name='name', value=film['name']),
@@ -89,7 +106,11 @@ def create_film_document(film):
 
 
 def index_films(films):
-  """Add the films JSON to the index."""
+  """ Add the films JSON to the index.
+
+  Args:
+    films (list): A list of film data from Freebase.
+  """
   docs = []
 
   for film in films:
@@ -105,9 +126,9 @@ def index_films(films):
 
 
 class GetYear(webapp2.RequestHandler):
-  """Get the next year to scrape films from freebase."""
 
   def get(self):
+    """Get the next year to scrape films from freebase."""
     now = int(datetime.datetime.now().strftime('%Y'))
     year = memcache.get('year') or now
     previous_year = year - 1
@@ -119,9 +140,9 @@ class GetYear(webapp2.RequestHandler):
 
 
 class GetFilmsByYear(webapp2.RequestHandler):
-  """Get films from the Freebase API."""
 
   def get(self, year):
+    """Get films from the Freebase API."""
     cursor = self.request.get('cursor', default_value='')
     first_day = datetime.datetime(int(year), 1, 1)
     last_day = datetime.datetime(int(year), 12, 31)

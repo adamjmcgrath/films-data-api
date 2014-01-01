@@ -5,7 +5,6 @@
 __author__ = 'adamjmcgrath@gmail.com (Adam McGrath)'
 
 import json
-import logging
 import re
 
 import webapp2
@@ -17,7 +16,15 @@ _AUTHORIZED_APPS = ['my-first-app', 'my-other-app']
 
 
 def get_films_from_query(q, cursor):
-  """docstring for get_films_from_query"""
+  """Create a search query for films from a query string.
+
+  Args:
+    q (str): The query string.
+    cursor (str): The cursor.
+
+  Return:
+    SearchResults
+  """
 
   options = search.QueryOptions(
       limit=_SEARCH_LIMIT,
@@ -32,9 +39,10 @@ def get_films_from_query(q, cursor):
 
 
 class ApiHandler(webapp2.RequestHandler):
-  """Returns JSON sugesting film titles given a starting string."""
 
   def get(self):
+    """Returns films JSON given a from partial string."""
+
     # When using urlfetch, make sure you set follow_redirects=False or the header does not get added.
     app_id = self.request.headers.get('X-Appengine-Inbound-Appid', None)
     if app_id not in _AUTHORIZED_APPS and not users.is_current_user_admin():
@@ -64,7 +72,7 @@ class ApiHandler(webapp2.RequestHandler):
       for result in results:
         response_list.append({
           'key': result.doc_id,
-          'title': result.fields[0].value, # TODO(adamjmcgrath) Get fields by name.
+          'title': result.fields[0].value,  # TODO(adamjmcgrath) Get fields by name.
           'year': result.fields[1].value.year,
           'rank': result.rank
         })
