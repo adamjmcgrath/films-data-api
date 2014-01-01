@@ -1,0 +1,3 @@
+queue:
+- name: films
+  rate: 1/s
