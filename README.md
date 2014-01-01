@@ -5,6 +5,8 @@ App Engine Search API.
 
 It can be used for autocomplete as the film titles are tokenized and can be searched using partial queries.
 
+The search results are ranked by gross revenue, when available, then release date.
+
 ## Example
 
 `GET /api?q=potter`
