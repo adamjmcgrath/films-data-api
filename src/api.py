@@ -26,12 +26,7 @@ def get_films_from_query(q, cursor):
     SearchResults
   """
 
-  options = search.QueryOptions(
-      limit=_SEARCH_LIMIT,
-      cursor=cursor,
-      returned_fields=['name', 'release_date'])
-
-  query = search.Query(query_string=q, options=options)
+  query = search.Query(query_string=q)
   index = search.Index(name='films')
 
   return index.search(query)
@@ -70,10 +65,13 @@ class ApiHandler(webapp2.RequestHandler):
     if results:
       response_list = []
       for result in results:
+        fields = {}
+        for f in result.fields:
+          fields[f.name] = f.value
         response_list.append({
           'key': result.doc_id,
-          'title': result.fields[0].value,  # TODO(adamjmcgrath) Get fields by name.
-          'year': result.fields[1].value.year,
+          'title': fields['name'],
+          'year': fields['release_date'].year,
           'rank': result.rank
         })
 
