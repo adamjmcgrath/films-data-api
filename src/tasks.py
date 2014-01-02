@@ -169,7 +169,7 @@ class GetFilmsByYear(webapp2.RequestHandler):
       'query': json.dumps(json.loads(mql)),
       'key': secrets.API_KEY
     })
-    response = urlfetch.fetch('%s?%s' % (BASE_URL, params))
+    response = urlfetch.fetch('%s?%s' % (BASE_URL, params), deadline=30)
     films_json = json.loads(response.content)
 
     try:
