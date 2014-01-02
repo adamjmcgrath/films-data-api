@@ -12,8 +12,9 @@ import logging
 import urllib
 
 import webapp2
-from google.appengine.api import memcache, search, taskqueue, urlfetch
+from google.appengine.api import search, taskqueue, urlfetch
 
+import models
 import secrets
 
 
@@ -129,13 +130,12 @@ class GetYear(webapp2.RequestHandler):
 
   def get(self):
     """Get the next year to scrape films from freebase."""
-    now = int(datetime.datetime.now().strftime('%Y'))
-    year = memcache.get('year') or now
+    year = models.CurrentYear.get_current_year()
     previous_year = year - 1
     if previous_year < MIN_YEAR:
-      memcache.delete('year')
+      models.CurrentYear.clear_current_year()
     else:
-      memcache.set('year', previous_year)
+      models.CurrentYear.set_current_year(previous_year)
       taskqueue.add(url='/tasks/getfilms/%d' % year, method='GET', queue_name='films')
 
 
