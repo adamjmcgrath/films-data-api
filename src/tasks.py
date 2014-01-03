@@ -144,9 +144,9 @@ class GetFilmsByYear(webapp2.RequestHandler):
   def get(self, year):
     """Get films from the Freebase API."""
     cursor = self.request.get('cursor', default_value='')
-    first_day = datetime.datetime(int(year), 1, 1)
+    first_day = datetime.date(int(year), 1, 1)
     last_day = datetime.date(int(year), 12, 31)
-    now = datetime.datetime.now()
+    now = datetime.datetime.now().date()
     from_date_param = self.request.get('from_date', default_value=first_day.strftime(ISO_DATE_FORMAT))
 
     from_date = parse(from_date_param, default=DEFAULT_DATE)
