@@ -32,7 +32,7 @@ MQL = '''[{
   "ns1:initial_release_date": [{
     "type": "/type/datetime",
     "value": null,
-    "value<=": "%s"
+    "value<": "%s"
   }],
   "id": null,
   "initial_release_date": null,
@@ -149,10 +149,10 @@ class GetFilmsByYear(webapp2.RequestHandler):
     now = datetime.datetime.now()
     from_date_param = self.request.get('from_date', default_value=first_day.strftime(ISO_DATE_FORMAT))
 
-    from_date = parse(from_date_param)
+    from_date = parse(from_date_param, default=DEFAULT_DATE)
     to_date = from_date + relativedelta(months=+1)
 
-    if to_date > last_day or from_date > now:
+    if from_date > last_day or from_date > now:
       logging.info('Got films for: %s' % year)
       return
 
