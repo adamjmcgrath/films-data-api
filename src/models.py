@@ -29,7 +29,7 @@ class CurrentYear(ndb.Model):
     if current_year:
       return current_year.year
     else:
-      year = int(datetime.datetime.now().strftime('%Y'))
+      year = datetime.datetime.now().year
       CurrentYear.set_current_year(year)
       return year
 

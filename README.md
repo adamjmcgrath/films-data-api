@@ -1,6 +1,6 @@
 # Films data api
 
-This is an App Engine application that indexes films from the Freebase API and makes them available as a using the
+This is an App Engine application that indexes films from the Freebase API and makes them available using the
 App Engine Search API.
 
 It can be used for autocomplete as the film titles are tokenized and can be searched using partial queries.
