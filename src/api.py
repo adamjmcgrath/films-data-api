@@ -41,7 +41,7 @@ class ApiHandler(webapp2.RequestHandler):
 
     # When using urlfetch, make sure you set follow_redirects=False or the header does not get added.
     app_id = self.request.headers.get('X-Appengine-Inbound-Appid', None)
-    logging.info('Access from addId: ', app_id)
+    logging.info('Access from addId: %s', app_id)
     if app_id not in _AUTHORIZED_APPS and not users.is_current_user_admin():
       self.abort(403)
 
