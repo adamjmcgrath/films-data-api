@@ -194,7 +194,7 @@ def get_tags_name():
   last_tag_name = get_last_tag_match()
   next = 0
   if last_tag_name:
-    next = int(last_tag_name[-1:]) + 1
+    next = int(last_tag_name.split('-')[-1]) + 1
   next_tag_name = '%s-%d' % (env.app.version, next)
   print yellow('Last tag name: %s' % last_tag_name)
   print yellow('Next tag name: %s' % next_tag_name)
