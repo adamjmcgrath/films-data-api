@@ -150,11 +150,10 @@ def check_if_last_version():
 
 
 def get_last_tag_match():
-  tags = local('git for-each-ref --sort=taggerdate --format \'%(tag)\' refs/tags', capture=True)
+  tags = local('git for-each-ref --sort=taggerdate --format "%(tag)" refs/tags', capture=True)
   if len(tags) == 0:
     return None
   tags = tags.split()
-  tags.sort()
   return tags[-1]
 
 
