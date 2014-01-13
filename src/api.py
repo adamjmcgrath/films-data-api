@@ -12,7 +12,7 @@ from google.appengine.api import memcache, search, users
 
 _SEARCH_LIMIT = 10
 _VALID_CALLBACK = re.compile('^\w+(\.\w+)*$')
-_AUTHORIZED_APPS = ['my-first-app', 'my-other-app']
+_AUTHORIZED_APPS = ['dev~ffc-app', 'ffc-app']
 
 
 def get_films_from_query(q, cursor):
