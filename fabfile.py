@@ -9,6 +9,7 @@ from __future__ import with_statement
 __author__ = 'adamjmcgrath@gmail.com (Adam McGrath)'
 
 import functools
+import operator
 import os
 import sys
 from fabric.api import *
@@ -150,11 +151,12 @@ def check_if_last_version():
 
 
 def get_last_tag_match():
-  tags = local('git for-each-ref --sort=taggerdate --format "%(tag)" refs/tags', capture=True)
+  tags = local('git tag -l', capture=True)
   if len(tags) == 0:
     return None
-  tags = tags.split()
-  return tags[-1]
+  tags = [(int(x.split('-')[0]), int(x.split('-')[1])) for x in tags.split()]
+  tag = sorted(tags, key=operator.itemgetter(0, 1))[-1]
+  return '-'.join([str(x) for x in tag])
 
 
 def do_tag():
