@@ -15,7 +15,7 @@ _VALID_CALLBACK = re.compile('^\w+(\.\w+)*$')
 _AUTHORIZED_APPS = ['dev~ffc-app', 'ffc-app']
 
 
-def get_films_from_query(q):
+def get_films_from_query(q, limit=_SEARCH_LIMIT):
   """Create a search query for films from a query string.
 
   Args:
@@ -26,7 +26,8 @@ def get_films_from_query(q):
     SearchResults
   """
 
-  query = search.Query(query_string=q)
+  query = search.Query(query_string=q,
+                       options=search.QueryOptions(limit=int(limit)))
   index = search.Index(name='films')
 
   return index.search(query)
@@ -77,6 +78,7 @@ class ApiHandler(webapp2.RequestHandler):
     callback = self.request.get('callback')
     q = self.request.get('q').strip()
     id = self.request.get('id').strip()
+    limit = self.request.get('limit').strip()
     add_callback = callback and _VALID_CALLBACK.match(callback)
 
     if not q and not id:
@@ -89,7 +91,7 @@ class ApiHandler(webapp2.RequestHandler):
       return webapp2.Response(memcached)
 
     if q:
-      results = get_films_from_query(q).results
+      results = get_films_from_query(q, limit=limit).results
 
       if results:
         response_list = []
