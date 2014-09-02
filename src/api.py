@@ -15,7 +15,7 @@ _VALID_CALLBACK = re.compile('^\w+(\.\w+)*$')
 _AUTHORIZED_APPS = ['dev~ffc-app', 'ffc-app']
 
 
-def get_films_from_query(q, limit=_SEARCH_LIMIT):
+def get_films_from_query(q, limit=None):
   """Create a search query for films from a query string.
 
   Args:
@@ -25,9 +25,9 @@ def get_films_from_query(q, limit=_SEARCH_LIMIT):
   Return:
     SearchResults
   """
-
+  limit = int(limit or _SEARCH_LIMIT)
   query = search.Query(query_string=q,
-                       options=search.QueryOptions(limit=int(limit)))
+                       options=search.QueryOptions(limit=limit))
   index = search.Index(name='films')
 
   return index.search(query)
