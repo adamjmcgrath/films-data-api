@@ -84,7 +84,9 @@ class ApiHandler(webapp2.RequestHandler):
     if not q and not id:
       return webapp2.Response('')
 
-    memcached = memcache.get(q)
+    cache_key = '%s-%s' % (q, limit) if q else id
+
+    memcached = memcache.get(cache_key)
     if memcached and not debug:
       if add_callback:
         memcached = '%s(%s)' % (callback, memcached)
@@ -106,7 +108,7 @@ class ApiHandler(webapp2.RequestHandler):
       response = json.dumps(doc_to_dict(result), indent=indent)
 
     if not debug:
-      memcache.set(q or id, response)
+      memcache.set(cache_key, response)
 
     if add_callback:
       response = '%s(%s)' % (callback, response)
