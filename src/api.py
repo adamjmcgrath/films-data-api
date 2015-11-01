@@ -114,4 +114,3 @@ class ApiHandler(webapp2.RequestHandler):
       response = '%s(%s)' % (callback, response)
 
     return webapp2.Response(response)
-
