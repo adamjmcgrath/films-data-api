@@ -93,12 +93,14 @@ def create_film_document(film):
   imdb_id = film['imdb_id'] and film['imdb_id']['value']
   gross_revenue = int(film['gross_revenue'] and film['gross_revenue']['amount'] or 0)
   release_date = parse(film['initial_release_date'], default=DEFAULT_DATE)
+  film_name = film['name']
 
   return search.Document(doc_id=film['id'],
-                         rank=max(gross_revenue, release_date.year),  # Rank films by gross revenue, then by date.
+                         # Rank films by gross revenue, then by length of name desc.
+                         rank=max(gross_revenue, 1000 - len(film_name)),
                          language='en',
                          fields=[
-                             search.TextField(name='name', value=film['name']),
+                             search.TextField(name='name', value=film_name),
                              search.TextField(name='tokens', value=tokens),
                              search.TextField(name='imdb_id', value=imdb_id),
                              search.NumberField(name='gross_revenue', value=gross_revenue),

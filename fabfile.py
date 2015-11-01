@@ -17,9 +17,9 @@ from fabric.colors import green, red, yellow
 import datetime
 import re
 
-APPENGINE_DEV_APPSERVER = '/usr/local/bin/dev_appserver.py'
-APPENGINE_PATH = '/usr/local/google_appengine/'
-APPENGINE_APP_CFG = '/usr/local/bin/appcfg.py'
+APPENGINE_PATH = os.path.abspath(os.environ['APPENGINE_SRC'])
+APPENGINE_DEV_APPSERVER =  os.path.join(APPENGINE_PATH, 'dev_appserver.py')
+APPENGINE_APP_CFG =  os.path.join(APPENGINE_PATH, 'appcfg.py')
 PYTHON = '/usr/bin/python'
 
 env.gae_email = 'adamjmcgrath@gmail.com'
@@ -35,7 +35,7 @@ def fix_appengine_path():
     os.path.join(APPENGINE_PATH, 'lib', 'webob'),
     os.path.join(APPENGINE_PATH, 'lib', 'yaml', 'lib'),
   ]
-  
+
   sys.path = EXTRA_PATHS + sys.path
 
 fix_appengine_path()
@@ -66,7 +66,7 @@ def last_tag():
 def deploy(tag=None, prod=False):
   if not is_working_directory_clean():
     abort('Working directory should be clean before deploying.')
-  
+
   prepare_deploy(tag=tag, prod=prod)
   local('%s %s -A %s -V %s --email=%s update %s' % (PYTHON, APPENGINE_APP_CFG,
       env.app.application, env.app.version, env.gae_email, env.gae_src))
@@ -113,7 +113,7 @@ def prepare_deploy(tag=None, prod=False):
 
   if not prod:
     env.app.version += '-test'
-  
+
   # Check out a clean copy.
   deploy_path = local('mktemp -d -t %s' % env.app.application, capture=True)
   local('git clone . %s' % deploy_path)
@@ -123,7 +123,7 @@ def prepare_deploy(tag=None, prod=False):
     local('find . -name ".git*" | xargs rm -rf')
     print yellow('App: %s' % env.app.application)
     print yellow('Ver: %s' % env.app.version)
-  
+
   env.deploy_path = deploy_path
 
 

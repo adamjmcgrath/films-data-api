@@ -9,6 +9,8 @@ import api
 import tasks
 import views
 
+from google.appengine.ext import vendor
+vendor.add('lib')
 
 app = webapp2.WSGIApplication([
     ('/', views.HomePage),
