@@ -1,4 +1,4 @@
 cron:
-- description: daily get a year of films
+- description: hourly get a year of films
   url: /tasks/getyear
   schedule: every 60 minutes
