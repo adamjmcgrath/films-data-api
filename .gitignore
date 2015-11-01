@@ -1,0 +1,5 @@
+vendor
+*.pyc
+src/lib
+.env
+vendors
